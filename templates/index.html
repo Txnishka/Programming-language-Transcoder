@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python to Java/JavaScript Transpiler</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Python to Java/JavaScript Transpiler</h1>
+        <form id="transpileForm">
+            <label for="python_code">Enter Python Code:</label><br>
+            <textarea id="python_code" name="python_code" rows="10" cols="50"></textarea><br><br>
+
+            <label for="language">Transpile to:</label><br>
+            <select id="language" name="language">
+                <option value="java">Java</option>
+                <option value="javascript">JavaScript</option>
+            </select><br><br>
+
+            <button type="submit">Transpile</button>
+        </form>
+
+        <h2>Transpiled Code:</h2>
+        <pre id="result"></pre>
+    </div>
+
+    <script>
+        const form = document.getElementById('transpileForm');
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const response = await fetch('/transpile', {
+                method: 'POST',
+                body: formData
+            });
+
+            const resultElement = document.getElementById('result');
+            const data = await response.json();
+            
+            if (response.ok) {
+                resultElement.textContent = data.transpiled_code;
+            } else {
+                resultElement.textContent = `Error: ${data.error}`;
+            }
+        };
+    </script>
+</body>
+</html>
